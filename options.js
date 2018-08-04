@@ -9,15 +9,8 @@ function constructOptions(kButtonColors) {
 		let button = document.createElement('button');
 		button.style.backgroundColor = item;
 		button.addEventListener('click', function() {
-			spotify_api.login()
-
-			// window.open('https://accounts.spotify.com/authorize' +
-			// '?response_type=code' +
-			// '&client_id=' + config.SPOTIFY_CLIENT_ID + (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
-			// '&redirect_uri=' + encodeURIComponent(chrome.identity.getRedirectUrl()));
-			// chrome.storage.sync.set({color: item}, function() {
-			// 	console.log('color is ' + item);
-			// })
+			var token = spotify_api.login()
+			console.log(token)
 		});
 		page.appendChild(button);
 	}
