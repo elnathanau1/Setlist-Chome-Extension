@@ -10,12 +10,12 @@ var spotify_api = {
       {'url': 'https://accounts.spotify.com/authorize' +
       '?response_type=code' +
       '&client_id=' + config.SPOTIFY_CLIENT_ID + (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
-      '&redirect_uri=' + redirect_url +
-      '&show_dialog=' + 'true'
+      '&redirect_uri=' + redirect_url
       , 'interactive': true},
-       function(token_url, callback) {
+       function(token_url) {
          //extract token from callback url
          var token = token_url.match(/callback\?code\=([\S\s]*)/)[1]    //note: this will not work if we include state in login call
+         console.log(token)
          return token   //TODO: currently pulling this, but not returning
       });
 
