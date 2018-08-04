@@ -1,0 +1,5 @@
+Notes:
+
+- Naming convention:
+  - default playlist name: [artist name] - [tour]
+    - put [date], [location], [setlist.fm url] in playlist description
