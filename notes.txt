@@ -1,5 +1,30 @@
 Notes:
 
+Setlist.fm API Documentation: https://api.setlist.fm/docs/1.0/index.html
+Spotify API Documentation: https://developer.spotify.com/documentation/web-api/
+
+- Process (User/Front end)
+  - 1. User installs extension
+  - 2. On first time user clicks on button, requests Spotify authentication (might have to load separate spotify page)
+  - 3. From then on, if user clicks on button while on setlist.fm setlist, create a spotify playlist with the songs
+      - if not on a proper url, show instructions
+
+- Spotify API Wrapper for JS: https://github.com/JMPerez/spotify-web-api-js
+  - Installation: bower maybe? https://bower.io/
+
+- Process (Developer/Back end)
+  - 1. Requesting Spotify authentication:
+    - a. Documentation found:
+      - https://oauth.net/articles/authentication/
+      - https://developer.spotify.com/documentation/general/guides/authorization-guide/
+  - 2. Check user URL
+    - a. ex URL: https://www.setlist.fm/setlist/state-champs/2018/merriweather-post-pavilion-columbia-md-3beb7cb4.html
+  - 3. Pull track names:
+    -
+
 - Naming convention:
   - default playlist name: [artist name] - [tour]
     - put [date], [location], [setlist.fm url] in playlist description
+
+- Conflicts: what if the song doesn't exist in Spotify
+  - idea:
