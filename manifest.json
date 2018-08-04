@@ -1,0 +1,6 @@
+{
+  "name": "Setlist-Chrome-Extension",
+  "version": "1.0",
+  "description": "Setlist.fm to Spotify",
+  "manifest_version": 2
+}
