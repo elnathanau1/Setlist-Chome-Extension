@@ -2,7 +2,7 @@
   "name": "Setlist-Chrome-Extension",
   "version": "1.0",
   "description": "Setlist.fm to Spotify",
-  "permissions": ["activeTab", "declarativeContent", "storage"],
+  "permissions": ["activeTab", "declarativeContent", "storage", "identity"],
   "options_page": "options.html",
   "background": {
   	"scripts": ["background.js"],
