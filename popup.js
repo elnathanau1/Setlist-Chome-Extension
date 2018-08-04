@@ -2,7 +2,7 @@
 
 'use strict';
 
-let changeColor = document.getElementById('changeColor');
+let changeColor = document.getElementById('setlistCreation');
 
 //gets the color from storage and changes the background color to it
 chrome.storage.sync.get('color', function(data) {
