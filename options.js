@@ -1,3 +1,5 @@
+//allows for options to change background image colors logic
+
 'use strict';
 
 let page = document.getElementById('buttonDiv');
