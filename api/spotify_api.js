@@ -2,10 +2,10 @@
 var spotify_api = {
   login : function(){
     console.log("pressed login");
+    //TODO: Add scopes necessary
     var scopes = 'user-read-private user-read-email';
 
     var redirect_url = chrome.identity.getRedirectURL() + 'callback';
-    console.log(redirect_url)
     chrome.identity.launchWebAuthFlow(
       {'url': 'https://accounts.spotify.com/authorize' +
       '?response_type=code' +
@@ -14,7 +14,10 @@ var spotify_api = {
       '&show_dialog=' + 'true'
       , 'interactive': true},
        function(token_url) {
-          console.log(token_url)
+         //extract token from callback url
+         console.log(token_url)
+         var token = token_url.match(/callback\?code\=([\S\s]*)/)[1]
+         console.log(token)
       });
 
   }
