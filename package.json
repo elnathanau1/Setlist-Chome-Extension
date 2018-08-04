@@ -1,0 +1,23 @@
+{
+  "name": "setlist-chome-extension",
+  "version": "1.0.0",
+  "description": "Converts setlist from Setlist.fm to Spotify playlist",
+  "main": "background.js",
+  "dependencies": {
+    "spotify-web-api-js": "^0.24.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elnathanau1/Setlist-Chome-Extension.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elnathanau1/Setlist-Chome-Extension/issues"
+  },
+  "homepage": "https://github.com/elnathanau1/Setlist-Chome-Extension#readme"
+}
