@@ -14,7 +14,7 @@ function createLoginButton() {
 		if (result.AuthorizationCode === "undefined") {
 			button.innerHTML = "Login to Spotify!"
 		} else {
-			button.innerHTML = "Log Out";
+			button.innerHTML = "Switch User";
 		}
 		button.addEventListener('click', function() {
 			var token = spotify_api.login()

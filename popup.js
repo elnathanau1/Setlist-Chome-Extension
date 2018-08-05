@@ -2,20 +2,17 @@
 
 'use strict';
 
-let changeColor = document.getElementById('setlistCreation');
-
-//gets the color from storage and changes the background color to it
-chrome.storage.sync.get('color', function(data) {
-	changeColor.style.backgroundColor = data.color;
-	changeColor.setAttribute('value', data.color);
-});
-
-//triggers programatically injected content script 
-changeColor.onclick = function(element) {
-	let color = element.target.value;
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-		chrome.tabs.executeScript(
-			tabs[0].id,
-			{code: 'document.body.style.backgroundColor = "' + color + '";'});
-	});
-};
+let createPlaylist = document.getElementById('setlistCreation');
+createPlaylist.onclick = function(element) {
+	var xmlHttp = new XMLHttpRequest();
+	xmlHttp.open("GET", "https://api.setlist.fm/rest/1.0/setlist/3beb7cb4", true);
+	xmlHttp.setRequestHeader("x-api-key", config.SETLISTFM_API_KEY);
+	xmlHttp.onload = function (e) {
+		if(xmlHttp.readyState === 4) {
+			if (xmlHttp.status === 200) {
+				console.log(xmlHttp.responseText);
+			}
+		}
+	}
+	xmlHttp.send(null);
+}
