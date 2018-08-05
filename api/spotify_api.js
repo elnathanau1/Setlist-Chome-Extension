@@ -1,6 +1,9 @@
 // spotify api access methods here
 var spotify_api = {
-  reqRefreshToken : function(authToken){
+  // note: this function requires grantType to properly work.
+  // If using authentication code, grant type is 'authorization_code'
+  // Else if using refresh token, grant type is 'refresh_token'
+  reqRefreshToken : function(authToken, grantType){
     var xhttp = new XMLHttpRequest();
     xhttp.open('POST', 'https://accounts.spotify.com/api/token', true)
     xhttp.setRequestHeader("Authorization", `Basic ${btoa(`${config.SPOTIFY_CLIENT_ID}:${config.SPOTIFY_CLIENT_SECRET}`)}`)
@@ -9,6 +12,7 @@ var spotify_api = {
       if(this.readyState == 4 && this.status == 200){
         var responseJSON = JSON.parse(this.responseText);
         // var spotifyWrapper = new SpotifyWebApi();
+        //TODO: Save these into storage
         console.log("access_token: " + responseJSON["access_token"])
         console.log("token_type: " + responseJSON["token_type"])
         console.log("scope: " + responseJSON["scope"])
@@ -19,7 +23,7 @@ var spotify_api = {
         console.log(this.responseText)
       }
     };
-    xhttp.send("grant_type=authorization_code&code=" + authToken + "&redirect_uri=" + chrome.identity.getRedirectURL() + 'callback');
+    xhttp.send("grant_type=" + grantType + "&code=" + authToken + "&redirect_uri=" + chrome.identity.getRedirectURL() + 'callback');
   },
 
   login : function(){
@@ -45,7 +49,7 @@ var spotify_api = {
         token = token_url.match(/callback\?code\=([\S\s]*)/)[1]    //note: this will not work if we include state in login call
         chrome.storage.sync.set({'AuthorizationCode': token}, function() {
           console.log('Storing AuthorizationCode value to be ' + token);
-          spotify_api.reqRefreshToken(token)
+          spotify_api.reqRefreshToken(token, "authorization_code")
           return token   //TODO: currently pulling this, but not returning
         });
       }
