@@ -3,9 +3,18 @@
 'use strict';
 
 let createPlaylist = document.getElementById('setlistCreation');
+var id = 0;
+//gets current url and parses it to get SetlistID
+var query = {active: true, currentWindow: true };
+function callback(tabs) {
+	var arr = tabs[0].url.split("-");
+	id = arr[arr.length-1].split(".")[0];
+}
+chrome.tabs.query(query, callback);
+
 createPlaylist.onclick = function(element) {
 	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.open("GET", "https://api.setlist.fm/rest/1.0/setlist/3beb7cb4", true);
+	xmlHttp.open("GET", "https://api.setlist.fm/rest/1.0/setlist/" + id, true);
 	xmlHttp.setRequestHeader("x-api-key", config.SETLISTFM_API_KEY);
 	xmlHttp.onload = function (e) {
 		if(xmlHttp.readyState === 4) {
