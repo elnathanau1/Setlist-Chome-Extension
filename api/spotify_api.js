@@ -7,8 +7,14 @@ var spotify_api = {
     xhttp.setRequestHeader("Content-Type", 'application/x-www-form-urlencoded');
     xhttp.onreadystatechange = function(){
       if(this.readyState == 4 && this.status == 200){
-        console.log("success")
-        console.log(this.responseText)
+        var responseJSON = JSON.parse(this.responseText);
+        // var spotifyWrapper = new SpotifyWebApi();
+        console.log("access_token: " + responseJSON["access_token"])
+        console.log("token_type: " + responseJSON["token_type"])
+        console.log("scope: " + responseJSON["scope"])
+        console.log("expires_in: " + responseJSON["expires_in"])
+        console.log("refresh_token: " + responseJSON["refresh_token"])
+
       }else {
         console.log(this.responseText)
       }
@@ -23,8 +29,7 @@ var spotify_api = {
     //   show = result.showDialog;
     //  });
 
-    //TODO: Add scopes necessary
-    var scopes = 'user-read-private user-read-email';
+    var scopes = 'playlist-modify-public playlist-modify-private';
     var redirect_url = chrome.identity.getRedirectURL() + 'callback';
 
     chrome.identity.launchWebAuthFlow({'url': 'https://accounts.spotify.com/authorize' +
