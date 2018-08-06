@@ -23,6 +23,10 @@ We are able to identify what page the user is on, and access the setlist.fm api 
 ## Next Steps
 
 
+## Process Flow Chart
+* [draw.io](https://www.draw.io/?lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1#G1sXyfNucKvjiMAFeiKV1HCDKZ7_TKvwHi)
+
+
 ## Authors
 
 * **Elnathan Au** - [elnathanau1](https://github.com/elnathanau1)

@@ -95,9 +95,9 @@ var spotify_api = {
       }
     };
     var body = {
-      'name' : 'Extension Test',
+      'name' : 'Extension Test',    //TODO: make this a parameter
       'public' : 'true',      //TODO: make this an option in the options page
-      'description' : 'This is a sample description'
+      'description' : 'This is a sample description'    //TODO: make this a parameter
     }
     xhttp.send(JSON.stringify(body))
   },
