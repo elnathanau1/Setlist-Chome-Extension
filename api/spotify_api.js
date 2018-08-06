@@ -19,6 +19,8 @@ var spotify_api = {
         console.log("expires_in: " + responseJSON["expires_in"])
         console.log("refresh_token: " + responseJSON["refresh_token"])
 
+        spotify_api.getUser(responseJSON["access_token"])
+
       }else {
         console.log(this.responseText)
       }
@@ -27,11 +29,6 @@ var spotify_api = {
   },
 
   login : function(){
-    // var show = true;
-    // chrome.storage.sync.get(['showDialog'], function(result){
-    //   console.log('Value for showDialog is currently ' + result.showDialog);
-    //   show = result.showDialog;
-    //  });
 
     var scopes = 'playlist-modify-public playlist-modify-private';
     var redirect_url = chrome.identity.getRedirectURL() + 'callback';
@@ -59,5 +56,48 @@ var spotify_api = {
         });
       }
     });
+  },
+
+  getUser : function(access_token){
+    var xhttp = new XMLHttpRequest();
+    xhttp.open('GET', 'https://api.spotify.com/v1/me', true)
+    xhttp.setRequestHeader("Accept", "application/json")
+    xhttp.setRequestHeader("Content-Type", "application/json")
+    xhttp.setRequestHeader("Authorization", "Bearer " + access_token)
+    xhttp.onreadystatechange = function(){
+      if(this.readyState == 4 && this.status == 200){
+        var responseJSON = JSON.parse(this.responseText);
+        var id = responseJSON["id"]   //TODO: Store this
+        spotify_api.createPlaylist(id, access_token)
+
+
+      }else {
+        console.log("failure\n" + this.responseText)
+      }
+    };
+    xhttp.send()
+
+  },
+
+  createPlaylist : function(id, access_token){
+    var xhttp = new XMLHttpRequest();
+    xhttp.open('POST', 'https://api.spotify.com/v1/users/' + id + '/playlists', true)
+    xhttp.setRequestHeader("Accept", "application/json")
+    xhttp.setRequestHeader("Content-Type", "application/json")
+    xhttp.setRequestHeader("Authorization", "Bearer " + access_token)
+    xhttp.onreadystatechange = function(){
+      if(this.readyState == 4 && (this.status == 200 || this.status == 201)){
+        console.log("created playlist!")
+
+      }else {
+        console.log("could not create playlist")
+      }
+    };
+    var body = {
+      'name' : 'Extension Test',
+      'public' : 'true',      //TODO: make this an option in the options page
+      'description' : 'This is a sample description'
+    }
+    xhttp.send(JSON.stringify(body))
   }
 }
