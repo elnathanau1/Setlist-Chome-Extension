@@ -113,12 +113,31 @@ var spotify_api = {
       if(this.readyState == 4){
         // console.log(this.responseText)
         var responseJSON = JSON.parse(this.responseText);
-        console.log(responseJSON["tracks"]["items"][0]["id"])
-        console.log(responseJSON["tracks"]["items"][0]["name"])
-
+        var track_id = responseJSON["tracks"]["items"][0]["id"]
+        var track_name = responseJSON["tracks"]["items"][0]["name"]
+        spotify_api.addTrackToPlaylist(track_id, "125980338", "6zNeNJASpXgpU7xQACkAyQ", access_token)
 
       }else {
         // console.log("failure\n" + this.responseText)
+      }
+    };
+    xhttp.send()
+  },
+
+  //adds one at a time, can be rewritten to make a single call for entire playlist
+  addTrackToPlaylist : function(track_id, user_id, playlist_id, access_token){
+    var xhttp = new XMLHttpRequest();
+    var query = '?uris=spotify:track:' + track_id
+    xhttp.open('POST', 'https://api.spotify.com/v1/users/' + user_id + '/playlists/' + playlist_id + '/tracks' + query, true)
+    xhttp.setRequestHeader("Accept", "application/json")
+    xhttp.setRequestHeader("Content-Type", "application/json")
+    xhttp.setRequestHeader("Authorization", "Bearer " + access_token)
+    xhttp.onreadystatechange = function(){
+      if(this.readyState == 4 && (this.status == 200 || this.status == 201)){
+        console.log("created playlist!")
+
+      }else {
+        console.log("could not create playlist")
       }
     };
     xhttp.send()
