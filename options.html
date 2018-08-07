@@ -11,7 +11,14 @@
   	</style>
   </head>
   <body>
-  	<div id="buttonDiv">
+  	<div id="buttonDiv"></div>
+    <div>
+      <h?><b><font size="+2">Playlist Settings</font></b></h?><br><br>
+      <form name="playlistPrivacy">
+        <input id="public" type="radio" name="privacy"/> Public Playlist
+        <input id="private" type="radio" name="privacy"/> Private Playlist
+      </form>
+      <button type="button" id="saveButton">Save Settings</button>
     </div>
   </body>
   <script type='text/javascript' src='api/spotify_api.js'></script>

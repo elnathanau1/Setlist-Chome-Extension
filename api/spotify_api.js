@@ -96,31 +96,34 @@ var spotify_api = {
           var artist_name = result_artist['Artist_name']
           chrome.storage.sync.get('Tour_name', function(result_tour){
             var tour = result_tour['Tour_name']
+            chrome.storage.sync.get('Playlist_public', function(result_privacy){
+              var playlist_public = result_privacy['Playlist_public']
             //make request
-            var xhttp = new XMLHttpRequest();
-            xhttp.open('POST', 'https://api.spotify.com/v1/users/' + user_id + '/playlists', true)
-            xhttp.setRequestHeader('Accept', 'application/json')
-            xhttp.setRequestHeader('Content-Type', 'application/json')
-            xhttp.setRequestHeader('Authorization', 'Bearer ' + access_token)
-            xhttp.onreadystatechange = function(){
-              if(this.readyState == 4 && (this.status == 200 || this.status == 201)){
-                var responseJSON = JSON.parse(this.responseText);
-                var playlist_id = responseJSON['id']
-                chrome.storage.sync.set({['Playlist_id']: playlist_id}, function(){
-                  console.log('Storing Playlist_id to be ' + playlist_id)
-                  spotify_api.addSetToPlaylist()
-                })
+              var xhttp = new XMLHttpRequest();
+              xhttp.open('POST', 'https://api.spotify.com/v1/users/' + user_id + '/playlists', true)
+              xhttp.setRequestHeader('Accept', 'application/json')
+              xhttp.setRequestHeader('Content-Type', 'application/json')
+              xhttp.setRequestHeader('Authorization', 'Bearer ' + access_token)
+              xhttp.onreadystatechange = function(){
+                if(this.readyState == 4 && (this.status == 200 || this.status == 201)){
+                  var responseJSON = JSON.parse(this.responseText);
+                  var playlist_id = responseJSON['id']
+                  chrome.storage.sync.set({['Playlist_id']: playlist_id}, function(){
+                    console.log('Storing Playlist_id to be ' + playlist_id)
+                    spotify_api.addSetToPlaylist()
+                  })
 
-              } else {
+                } else {
 
+                }
+              };
+              var body = {
+                'name' : artist_name + ' - ' + tour,
+                'public' : playlist_public,     
+                'description' : '[SAMPLE DESCRIPTION]'
               }
-            };
-            var body = {
-              'name' : artist_name + ' - ' + tour,
-              'public' : 'true',      //TODO: make this an option in the options page
-              'description' : '[SAMPLE DESCRIPTION]'
-            }
-            xhttp.send(JSON.stringify(body))
+              xhttp.send(JSON.stringify(body))
+            })
           })
         })
       })

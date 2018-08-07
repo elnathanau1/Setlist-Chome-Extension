@@ -6,6 +6,24 @@
 // chrome.storage.sync.set({'showDialog': dialog}, function() {
 //   console.log('Storing showDialog value to be ' + dialog);
 // });
+
+function setPlaylistPrivacy() {
+	var saveButton = document.getElementById("saveButton");
+	//saves and displays previous selections
+	chrome.storage.sync.get(['Playlist_public'], function(result) {
+		if (result.Playlist_public === "undefined" || result.Playlist_public === "true")
+			document.getElementById("public").checked = true;
+		else
+			document.getElementById("private").checked = true;
+	})
+	saveButton.addEventListener('click', function() {
+		var privacyCheck = document.getElementById("public").checked ? true:false;
+		chrome.storage.sync.set({["Playlist_public"]: privacyCheck}, function() {
+			console.log('Storing Playlist_public value to be ' + privacyCheck);
+		})
+	})
+}
+
 let page = document.getElementById('buttonDiv');
 function createLoginButton() {
 	let button = document.createElement('button');
@@ -24,3 +42,4 @@ function createLoginButton() {
 	});
 }
 createLoginButton();
+setPlaylistPrivacy();
