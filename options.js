@@ -1,21 +1,20 @@
-//allows for options to change background image colors logic
-
 'use strict';
 
-// var dialog = authCode ? 'false' : 'true';
-// chrome.storage.sync.set({'showDialog': dialog}, function() {
-//   console.log('Storing showDialog value to be ' + dialog);
-// });
-
 function setPlaylistPrivacy() {
-	var saveButton = document.getElementById("saveButton");
 	//saves and displays previous selections
 	chrome.storage.sync.get(['Playlist_public'], function(result) {
-		if (result.Playlist_public === "undefined" || result.Playlist_public === "true")
+		console.log("Playlist_public is " + result.Playlist_public);
+		if (result.Playlist_public === "undefined" || result.Playlist_public === true)
 			document.getElementById("public").checked = true;
 		else
 			document.getElementById("private").checked = true;
 	})
+}
+
+
+
+function saveSettings() {
+	var saveButton = document.getElementById("saveButton");
 	saveButton.addEventListener('click', function() {
 		var privacyCheck = document.getElementById("public").checked ? true:false;
 		chrome.storage.sync.set({["Playlist_public"]: privacyCheck}, function() {
@@ -43,3 +42,4 @@ function createLoginButton() {
 }
 createLoginButton();
 setPlaylistPrivacy();
+saveSettings();

@@ -22,8 +22,8 @@ createPlaylist.onclick = function(element) {
 			if (xmlHttp.status === 200){
 				//TODO: THINK OF BETTER SYNC OPTION (or use promises omg)
 				var responseJSON = JSON.parse(this.responseText);
-				var artist = responseJSON["artist"]["name"]
-				var tour = responseJSON["tour"]["name"]
+				var artist = (responseJSON["artist"] ? responseJSON["artist"]["name"] : "")
+				var tour = (responseJSON["tour"] ? responseJSON["tour"]["name"] : "")
 				var set = responseJSON["sets"]["set"][0]["song"]
 				chrome.storage.sync.set({["Artist_name"]: artist}, function(){
 					chrome.storage.sync.set({["Tour_name"]: tour}, function(){
