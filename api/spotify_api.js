@@ -10,7 +10,7 @@ var spotify_api = {
     '?response_type=code' +
     '&client_id=' + config.SPOTIFY_CLIENT_ID + (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
     '&redirect_uri=' + redirect_url +
-    '&show_dialog=' + true
+    '&show_dialog=' + false
     , 'interactive': true},
     function(token_url) {
       //extract token from callback url
