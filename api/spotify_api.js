@@ -208,10 +208,15 @@ var spotify_api = {
           if(this.readyState == 4){
             // console.log(this.responseText)
             var responseJSON = JSON.parse(this.responseText);
-            var track_id = responseJSON['tracks']['items'][0]['id']
-            var track_name = responseJSON['tracks']['items'][0]['name']
-            // spotify_api.addTrackToPlaylist(track_id, user_id, playlist_id, access_token)
-            id_list.push(track_id)
+            try{
+              var track_id = responseJSON['tracks']['items'][0]['id']
+              var track_name = responseJSON['tracks']['items'][0]['name']
+              // spotify_api.addTrackToPlaylist(track_id, user_id, playlist_id, access_token)
+              id_list.push(track_id)
+            }
+            catch(e){
+              console.log("Skipping this track")
+            }
             set.shift()
             spotify_api.addSetHelper(id_list, set, artist_name, callback)
 
