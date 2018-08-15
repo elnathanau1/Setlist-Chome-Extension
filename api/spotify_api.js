@@ -198,10 +198,17 @@ var spotify_api = {
         var access_token = vars['Access_token']
         var playlist_id = vars['Playlist_id']
 
+        var newArtist = artist_name   //used for actual artist of song, not for future callbacks
         console.log(set[0]["name"])
+        try{
+          newArtist = set[0]["cover"]["name"]
+        }
+        catch(e){
+          //do nothing
+        }
 
         var xhttp = new XMLHttpRequest();
-        var query = '?q=track:' + set[0]["name"].replace(' ', '%20') + '%20artist:' + artist_name.replace(' ', '%20') + '&type=track&limit=1'
+        var query = '?q=track:' + set[0]["name"].replace(' ', '%20') + '%20artist:' + newArtist.replace(' ', '%20') + '&type=track&limit=1'
         xhttp.open('GET', 'https://api.spotify.com/v1/search' + query, true)
         xhttp.setRequestHeader('Accept', 'application/json')
         xhttp.setRequestHeader('Content-Type', 'application/json')

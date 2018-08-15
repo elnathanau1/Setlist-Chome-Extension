@@ -20,7 +20,6 @@ createPlaylist.onclick = function(element) {
 	xmlHttp.onload = function (e) {
 		if(xmlHttp.readyState === 4) {
 			if (xmlHttp.status === 200){
-				// console.log(this.responseText)
 				var responseJSON = JSON.parse(this.responseText);
 				var artist = (responseJSON["artist"] ? responseJSON["artist"]["name"] : "")
 				var tour = (responseJSON["tour"] ? responseJSON["tour"]["name"] : "")
