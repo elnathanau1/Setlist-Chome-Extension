@@ -110,12 +110,23 @@ var spotify_api = {
   },
 
   createPlaylist : function(){
-    spotify_api.getFromStorage(['User_id', 'Access_token', 'Artist_name', 'Tour_name', 'Playlist_public'], function(vars){
+    spotify_api.getFromStorage(['User_id', 'Access_token', 'Artist_name', 'Tour_name', 'Playlist_public', 'Title_parsed', 'Location_venue', 'Concert_date'], function(vars){
       var user_id = vars['User_id']
       var access_token = vars['Access_token']
       var artist_name = vars['Artist_name']
       var tour = vars['Tour_name']
       var playlist_public = vars['Playlist_public']
+      var playlist_title = vars['Title_parsed']
+
+      var split_title_arr = vars['Title_parsed'].split(" ")
+      var title = "";
+      for (var i = 0; i < split_title_arr.length-1; i++) {
+        if (split_title_arr[i] == "-")
+          title += " - ";
+        else
+          title += vars[split_title_arr[i]];
+      }
+
 
       //make request
       var xhttp = new XMLHttpRequest();
@@ -138,7 +149,7 @@ var spotify_api = {
         }
       };
       var body = {
-        'name' : artist_name + ' - ' + tour,
+        'name' : title,
         'public' : playlist_public,
         'description' : 'Created by Setlist.fm to Spotify Chrome Extension'
       }

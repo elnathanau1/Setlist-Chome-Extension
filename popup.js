@@ -21,8 +21,11 @@ createPlaylist.onclick = function(element) {
 		if(xmlHttp.readyState === 4) {
 			if (xmlHttp.status === 200){
 				var responseJSON = JSON.parse(this.responseText);
-				var artist = (responseJSON["artist"] ? responseJSON["artist"]["name"] : "")
-				var tour = (responseJSON["tour"] ? responseJSON["tour"]["name"] : "")
+				console.log(responseJSON);
+				var artist = (responseJSON["artist"] ? responseJSON["artist"]["name"] : "undefined")
+				var tour = (responseJSON["tour"] ? responseJSON["tour"]["name"] : "undefined")
+				var venue = (responseJSON["venue"] ? responseJSON["venue"]["name"] : "undefined")
+				var date = (responseJSON["eventDate"] ? responseJSON["eventDate"] : "undefined")
 				//set processing
 				var set = responseJSON["sets"]["set"][0]["song"]
 				if(responseJSON["sets"]["set"].length > 1){
@@ -38,8 +41,12 @@ createPlaylist.onclick = function(element) {
 				//end set processing
 				chrome.storage.sync.set({["Artist_name"]: artist}, function(){
 					chrome.storage.sync.set({["Tour_name"]: tour}, function(){
-						chrome.storage.sync.set({["Set"]: set}, function(){
-							spotify_api.login(false, spotify_api.reqRefreshToken());
+						chrome.storage.sync.set({["Location_venue"]: venue}, function(){
+							chrome.storage.sync.set({["Concert_date"]: date}, function(){
+								chrome.storage.sync.set({["Set"]: set}, function(){
+									spotify_api.login(false, spotify_api.reqRefreshToken());
+								})
+							})
 						})
 					})
 				})
