@@ -140,7 +140,7 @@ var spotify_api = {
       var body = {
         'name' : artist_name + ' - ' + tour,
         'public' : playlist_public,
-        'description' : '[SAMPLE DESCRIPTION]'
+        'description' : 'Created by Setlist.fm to Spotify Chrome Extension'
       }
       xhttp.send(JSON.stringify(body))
 
