@@ -48,13 +48,13 @@ function parseTitle(titleString) {
 			case "{location}": arr[i] = "location_venue"; break;
 			case "{date}": arr[i] = "concert_date"; break;
 			case "-": arr[i] = " \' - \' "; break;
-			default: return "undefined"; 
+			default: return "undefined";
 		}
 	}
-	
+
 	console.log(arr.join(''));
 	return arr.join('');
-	
+
 }
 
 let page = document.getElementById('buttonDiv');
@@ -69,7 +69,7 @@ function createLoginButton() {
 			//TODO: Make this a separate button that clears the authorization code, stuff in storage
 		}
 		button.addEventListener('click', function() {
-			var token = spotify_api.login()
+			spotify_api.login(true, function(){console.log("Logged in")})
 		});
 		page.appendChild(button);
 	});

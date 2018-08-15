@@ -25,7 +25,7 @@ var spotify_api = {
     }
   },
 
-  login : function(){
+  login : function(show_dialog, callback){
 
     var scopes = 'playlist-modify-public playlist-modify-private';
     var redirect_url = chrome.identity.getRedirectURL() + 'callback';
@@ -34,7 +34,7 @@ var spotify_api = {
     '?response_type=code' +
     '&client_id=' + config.SPOTIFY_CLIENT_ID + (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
     '&redirect_uri=' + redirect_url +
-    '&show_dialog=' + false
+    '&show_dialog=' + show_dialog
     , 'interactive': true},
     function(token_url) {
       //extract token from callback url
@@ -42,7 +42,7 @@ var spotify_api = {
         token = token_url.match(/callback\?code\=([\S\s]*)/)[1]    //note: this will not work if we include state in login call
         chrome.storage.sync.set({['Authorization_code']: token}, function() {
           console.log('Storing Authorization_code value to be ' + token);
-          spotify_api.reqRefreshToken()
+          callback()
         });
       }
       else {
@@ -192,12 +192,10 @@ var spotify_api = {
     if(set.length > 0){
       //code from search method
       spotify_api.getFromStorage(['User_id', 'Access_token', 'Playlist_id'], function(vars){
-
         var user_id = vars['User_id']
         var access_token = vars['Access_token']
         var playlist_id = vars['Playlist_id']
 
-        // console.log("set[0][name] = " + set[0]["name"])
         var xhttp = new XMLHttpRequest();
         var query = '?q=track:' + set[0]["name"].replace(' ', '%20') + '%20artist:' + artist_name.replace(' ', '%20') + '&type=track&limit=1'
         xhttp.open('GET', 'https://api.spotify.com/v1/search' + query, true)

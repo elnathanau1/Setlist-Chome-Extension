@@ -28,7 +28,7 @@ createPlaylist.onclick = function(element) {
 				chrome.storage.sync.set({["Artist_name"]: artist}, function(){
 					chrome.storage.sync.set({["Tour_name"]: tour}, function(){
 						chrome.storage.sync.set({["Set"]: set}, function(){
-							spotify_api.login();
+							spotify_api.login(false, spotify_api.reqRefreshToken());
 						})
 					})
 				})
