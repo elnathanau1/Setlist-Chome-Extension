@@ -154,6 +154,8 @@ var spotify_api = {
       var set = vars['Set']
       var artist_name = vars['Artist_name']
 
+      // console.log("Add set: " + set)
+
       spotify_api.addSetHelper([], set, artist_name, function(id_list){
         //access from storage
         spotify_api.getFromStorage(['User_id', 'Access_token', 'Playlist_id'], function(vars){
@@ -195,6 +197,8 @@ var spotify_api = {
         var user_id = vars['User_id']
         var access_token = vars['Access_token']
         var playlist_id = vars['Playlist_id']
+
+        console.log(set[0]["name"])
 
         var xhttp = new XMLHttpRequest();
         var query = '?q=track:' + set[0]["name"].replace(' ', '%20') + '%20artist:' + artist_name.replace(' ', '%20') + '&type=track&limit=1'

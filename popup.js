@@ -20,11 +20,23 @@ createPlaylist.onclick = function(element) {
 	xmlHttp.onload = function (e) {
 		if(xmlHttp.readyState === 4) {
 			if (xmlHttp.status === 200){
-				//TODO: THINK OF BETTER SYNC OPTION (or use promises omg)
+				// console.log(this.responseText)
 				var responseJSON = JSON.parse(this.responseText);
 				var artist = (responseJSON["artist"] ? responseJSON["artist"]["name"] : "")
 				var tour = (responseJSON["tour"] ? responseJSON["tour"]["name"] : "")
+				//set processing
 				var set = responseJSON["sets"]["set"][0]["song"]
+				if(responseJSON["sets"]["set"].length > 1){
+					for(var i = 1; i < responseJSON["sets"]["set"].length; i++){
+						responseJSON["sets"]["set"][i]["song"].forEach(function(element){
+							set.push(element)
+						})
+					}
+				}
+				console.log(JSON.stringify(set))
+				// console.log(set)
+
+				//end set processing
 				chrome.storage.sync.set({["Artist_name"]: artist}, function(){
 					chrome.storage.sync.set({["Tour_name"]: tour}, function(){
 						chrome.storage.sync.set({["Set"]: set}, function(){
