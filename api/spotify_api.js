@@ -42,7 +42,7 @@ var spotify_api = {
         token = token_url.match(/callback\?code\=([\S\s]*)/)[1]    //note: this will not work if we include state in login call
         chrome.storage.sync.set({['Authorization_code']: token}, function() {
           console.log('Storing Authorization_code value to be ' + token);
-          nextFunction()
+          spotify_api.reqRefreshToken()
         });
       }
       else {
@@ -129,6 +129,7 @@ var spotify_api = {
           var playlist_id = responseJSON['id']
           chrome.storage.sync.set({['Playlist_id']: playlist_id}, function(){
             console.log('Storing Playlist_id to be ' + playlist_id)
+            // spotify_api.addSetToPlaylist()
             spotify_api.addSetToPlaylist()
           })
 
@@ -146,62 +147,6 @@ var spotify_api = {
     })
   },
 
-  searchTrack : function(track_name, artist){
-    spotify_api.getFromStorage(['User_id', 'Access_token', 'Playlist_id'], function(vars){
-
-      var user_id = vars['User_id']
-      var access_token = vars['Access_token']
-      var playlist_id = vars['Playlist_id']
-
-      var xhttp = new XMLHttpRequest();
-      var query = '?q=track:' + track_name.replace(' ', '%20') + '%20artist:' + artist.replace(' ', '%20') + '&type=track&limit=1'
-      xhttp.open('GET', 'https://api.spotify.com/v1/search' + query, true)
-      xhttp.setRequestHeader('Accept', 'application/json')
-      xhttp.setRequestHeader('Content-Type', 'application/json')
-      xhttp.setRequestHeader('Authorization', 'Bearer ' + access_token)
-      xhttp.onreadystatechange = function(){
-        if(this.readyState == 4){
-          // console.log(this.responseText)
-          var responseJSON = JSON.parse(this.responseText);
-          var track_id = responseJSON['tracks']['items'][0]['id']
-          var track_name = responseJSON['tracks']['items'][0]['name']
-          spotify_api.addTrackToPlaylist(track_id, user_id, playlist_id, access_token)
-
-        }else {
-          // console.log('failure\n' + this.responseText)
-        }
-      };
-      xhttp.send()
-
-    })
-
-  },
-
-  //adds one at a time, can be rewritten to make a single call for entire playlist
-  addTrackToPlaylist : function(track_id){
-    spotify_api.getFromStorage(['User_id', 'Access_token', 'Playlist_id'], function(vars){
-
-      var user_id = vars['User_id']
-      var access_token = vars['Access_token']
-      var playlist_id = vars['Playlist_id']
-
-      //process request
-      var xhttp = new XMLHttpRequest();
-      var query = '?uris=spotify:track:' + track_id
-      xhttp.open('POST', 'https://api.spotify.com/v1/users/' + user_id + '/playlists/' + playlist_id + '/tracks' + query, true)
-      xhttp.setRequestHeader('Accept', 'application/json')
-      xhttp.setRequestHeader('Content-Type', 'application/json')
-      xhttp.setRequestHeader('Authorization', 'Bearer ' + access_token)
-      xhttp.onreadystatechange = function(){
-        if(this.readyState == 4){
-          console.log('Added ' + track_id + ' to ' + playlist_id)
-        }
-      };
-      xhttp.send()
-    })
-
-  },
-
   addSetToPlaylist : function(){
 
     spotify_api.getFromStorage(['Set', 'Artist_name'], function(vars){
@@ -209,9 +154,136 @@ var spotify_api = {
       var set = vars['Set']
       var artist_name = vars['Artist_name']
 
-      for(var i = 0; i < set.length; i++){
-        spotify_api.searchTrack(set[i]['name'], artist_name)
-      }
+      spotify_api.addSetHelper([], set, artist_name, function(id_list){
+        //access from storage
+        spotify_api.getFromStorage(['User_id', 'Access_token', 'Playlist_id'], function(vars){
+
+          var user_id = vars['User_id']
+          var access_token = vars['Access_token']
+          var playlist_id = vars['Playlist_id']
+
+          //make addTracks call
+          var query = '?uris='
+          for(var i = 0; i < id_list.length; i++){
+            query += 'spotify:track:' + id_list[i]
+            if(i != id_list.length-1){
+              query += ','
+            }
+          }
+          console.log(query)
+          var xhttp = new XMLHttpRequest();
+          xhttp.open('POST', 'https://api.spotify.com/v1/users/' + user_id + '/playlists/' + playlist_id + '/tracks' + query, true)
+          xhttp.setRequestHeader('Accept', 'application/json')
+          xhttp.setRequestHeader('Content-Type', 'application/json')
+          xhttp.setRequestHeader('Authorization', 'Bearer ' + access_token)
+          xhttp.onreadystatechange = function(){
+            if(this.readyState == 4){
+              console.log(this.responseText)
+            }
+          };
+          xhttp.send()
+        })
+
+      })
     })
+  },
+
+  addSetHelper : function(id_list, set, artist_name, callback){
+    if(set.length > 0){
+      //code from search method
+      spotify_api.getFromStorage(['User_id', 'Access_token', 'Playlist_id'], function(vars){
+
+        var user_id = vars['User_id']
+        var access_token = vars['Access_token']
+        var playlist_id = vars['Playlist_id']
+
+        // console.log("set[0][name] = " + set[0]["name"])
+        var xhttp = new XMLHttpRequest();
+        var query = '?q=track:' + set[0]["name"].replace(' ', '%20') + '%20artist:' + artist_name.replace(' ', '%20') + '&type=track&limit=1'
+        xhttp.open('GET', 'https://api.spotify.com/v1/search' + query, true)
+        xhttp.setRequestHeader('Accept', 'application/json')
+        xhttp.setRequestHeader('Content-Type', 'application/json')
+        xhttp.setRequestHeader('Authorization', 'Bearer ' + access_token)
+        xhttp.onreadystatechange = function(){
+          if(this.readyState == 4){
+            // console.log(this.responseText)
+            var responseJSON = JSON.parse(this.responseText);
+            var track_id = responseJSON['tracks']['items'][0]['id']
+            var track_name = responseJSON['tracks']['items'][0]['name']
+            // spotify_api.addTrackToPlaylist(track_id, user_id, playlist_id, access_token)
+            id_list.push(track_id)
+            set.shift()
+            spotify_api.addSetHelper(id_list, set, artist_name, callback)
+
+          }else {
+            // console.log('failure\n' + this.responseText)
+          }
+        };
+        xhttp.send()
+
+      })
+    }
+    else{
+      //the entire set should be processed by now
+      callback(id_list)
+    }
+
   }
+  //
+  // searchTrack : function(track_name, artist, callback){
+  //   spotify_api.getFromStorage(['User_id', 'Access_token', 'Playlist_id'], function(vars){
+  //
+  //     var user_id = vars['User_id']
+  //     var access_token = vars['Access_token']
+  //     var playlist_id = vars['Playlist_id']
+  //
+  //     var xhttp = new XMLHttpRequest();
+  //     var query = '?q=track:' + track_name.replace(' ', '%20') + '%20artist:' + artist.replace(' ', '%20') + '&type=track&limit=1'
+  //     xhttp.open('GET', 'https://api.spotify.com/v1/search' + query, true)
+  //     xhttp.setRequestHeader('Accept', 'application/json')
+  //     xhttp.setRequestHeader('Content-Type', 'application/json')
+  //     xhttp.setRequestHeader('Authorization', 'Bearer ' + access_token)
+  //     xhttp.onreadystatechange = function(){
+  //       if(this.readyState == 4){
+  //         // console.log(this.responseText)
+  //         var responseJSON = JSON.parse(this.responseText);
+  //         var track_id = responseJSON['tracks']['items'][0]['id']
+  //         var track_name = responseJSON['tracks']['items'][0]['name']
+  //         // spotify_api.addTrackToPlaylist(track_id, user_id, playlist_id, access_token)
+  //
+  //
+  //       }else {
+  //         // console.log('failure\n' + this.responseText)
+  //       }
+  //     };
+  //     xhttp.send()
+  //
+  //   })
+  //
+  // },
+  //
+  // //adds one at a time, can be rewritten to make a single call for entire playlist
+  // addTrackToPlaylist : function(track_id){
+  //   spotify_api.getFromStorage(['User_id', 'Access_token', 'Playlist_id'], function(vars){
+  //
+  //     var user_id = vars['User_id']
+  //     var access_token = vars['Access_token']
+  //     var playlist_id = vars['Playlist_id']
+  //
+  //     //process request
+  //     var xhttp = new XMLHttpRequest();
+  //     var query = '?uris=spotify:track:' + track_id
+  //     xhttp.open('POST', 'https://api.spotify.com/v1/users/' + user_id + '/playlists/' + playlist_id + '/tracks' + query, true)
+  //     xhttp.setRequestHeader('Accept', 'application/json')
+  //     xhttp.setRequestHeader('Content-Type', 'application/json')
+  //     xhttp.setRequestHeader('Authorization', 'Bearer ' + access_token)
+  //     xhttp.onreadystatechange = function(){
+  //       if(this.readyState == 4){
+  //         console.log('Added ' + track_id + ' to ' + playlist_id)
+  //       }
+  //     };
+  //     xhttp.send()
+  //   })
+  //
+  // }
 }
