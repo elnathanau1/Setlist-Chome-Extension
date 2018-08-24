@@ -5,16 +5,16 @@ function setPlaylistPrivacy() {
 	chrome.storage.sync.get(['Playlist_public'], function(result) {
 		console.log("Playlist_public is " + result.Playlist_public);
 		if (result.Playlist_public === "undefined" || result.Playlist_public === true)
-			document.getElementById("public").checked = true;
+		document.getElementById("public").checked = true;
 		else
-			document.getElementById("private").checked = true;
+		document.getElementById("private").checked = true;
 	})
 	chrome.storage.sync.get(['Title_option'], function(result) {
 		console.log("Title_option is " + result.Title_option);
 		if (result.Title_option === undefined)
-			document.getElementById("TitleText").value = "{artist} - {tour}"
+		document.getElementById("TitleText").value = "{artist} - {tour}"
 		else
-			document.getElementById("TitleText").value = result.Title_option;
+		document.getElementById("TitleText").value = result.Title_option;
 	})
 }
 
@@ -69,6 +69,9 @@ function createLoginButton() {
 			//TODO: Make this a separate button that clears the authorization code, stuff in storage
 		}
 		button.addEventListener('click', function() {
+			chrome.storage.sync.set({["Processing"]: "no"}, function(){
+				console.log("Processed is now undefined")
+			})
 			spotify_api.login(true, function(){console.log("Logged in")})
 		});
 		page.appendChild(button);

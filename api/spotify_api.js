@@ -199,6 +199,9 @@ var spotify_api = {
           xhttp.onreadystatechange = function(){
             if(this.readyState == 4){
               console.log(this.responseText)
+          		chrome.storage.sync.set({["Processing"]: "no"}, function(){
+                console.log("Processing = no")
+              })
             }
           };
           xhttp.send()
