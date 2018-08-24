@@ -44,7 +44,7 @@ createPlaylist.onclick = function(element) {
 						chrome.storage.sync.set({["Location_venue"]: venue}, function(){
 							chrome.storage.sync.set({["Concert_date"]: date}, function(){
 								chrome.storage.sync.set({["Set"]: set}, function(){
-									spotify_api.login(false, spotify_api.reqRefreshToken());
+									spotify_api.login(false, spotify_api.reqRefreshToken);
 								})
 							})
 						})

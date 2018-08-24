@@ -25,7 +25,7 @@ var spotify_api = {
     }
   },
 
-  login : function(show_dialog, callback){
+  login : function(show_dialog, newCallback){
 
     var scopes = 'playlist-modify-public playlist-modify-private';
     var redirect_url = chrome.identity.getRedirectURL() + 'callback';
@@ -42,7 +42,7 @@ var spotify_api = {
         token = token_url.match(/callback\?code\=([\S\s]*)/)[1]    //note: this will not work if we include state in login call
         chrome.storage.sync.set({['Authorization_code']: token}, function() {
           console.log('Storing Authorization_code value to be ' + token);
-          // callback()
+          newCallback()
         });
       }
       else {
@@ -75,7 +75,7 @@ var spotify_api = {
           //we probably dont actually need this since it takes an hour to expire
 
         }else {
-
+          console.log(this.responseText)
         }
       };
       xhttp.send('grant_type=authorization_code' + '&code=' + authToken + '&redirect_uri=' + chrome.identity.getRedirectURL() + 'callback');
@@ -118,15 +118,20 @@ var spotify_api = {
       var playlist_public = vars['Playlist_public']
       var playlist_title = vars['Title_parsed']
 
-      var split_title_arr = vars['Title_parsed'].split(" ")
       var title = "";
-      for (var i = 0; i < split_title_arr.length-1; i++) {
-        if (split_title_arr[i] == "-")
+      if(playlist_title != undefined){
+        var split_title_arr = vars['Title_parsed'].split(" ")
+        for (var i = 0; i < split_title_arr.length-1; i++) {
+          if (split_title_arr[i] == "-")
           title += " - ";
-        else if (split_title_arr[i].substring(0,2) == "<<")
+          else if (split_title_arr[i].substring(0,2) == "<<")
           title += vars[split_title_arr[i].substring(2)] + " ";
-        else
+          else
           title += split_title_arr[i] + " ";
+        }
+      }
+      else{
+        title = "UNDEFINED"
       }
 
 
