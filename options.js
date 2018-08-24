@@ -43,12 +43,12 @@ function parseTitle(titleString) {
 	console.log(arr);
 	for (var i = 0; i < arr.length; i++) {
 		switch(arr[i]) {
-			case "{artist}": arr[i] = "Artist_name "; break;
-			case "{tour}": arr[i] = "Tour_name "; break;
-			case "{venue}": arr[i] = "Location_venue "; break;
-			case "{date}": arr[i] = "Concert_date "; break;
+			case "{artist}": arr[i] = "<<Artist_name "; break;
+			case "{tour}": arr[i] = "<<Tour_name "; break;
+			case "{venue}": arr[i] = "<<Location_venue "; break;
+			case "{date}": arr[i] = "<<Concert_date "; break;
 			case "-": arr[i] = "- "; break;
-			default: return "undefined ";
+			default: arr[i] = arr[i] + " ";
 		}
 	}
 

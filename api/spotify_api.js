@@ -42,7 +42,7 @@ var spotify_api = {
         token = token_url.match(/callback\?code\=([\S\s]*)/)[1]    //note: this will not work if we include state in login call
         chrome.storage.sync.set({['Authorization_code']: token}, function() {
           console.log('Storing Authorization_code value to be ' + token);
-          callback()
+          // callback()
         });
       }
       else {
@@ -123,8 +123,10 @@ var spotify_api = {
       for (var i = 0; i < split_title_arr.length-1; i++) {
         if (split_title_arr[i] == "-")
           title += " - ";
+        else if (split_title_arr[i].substring(0,2) == "<<")
+          title += vars[split_title_arr[i].substring(2)] + " ";
         else
-          title += vars[split_title_arr[i]];
+          title += split_title_arr[i] + " ";
       }
 
 
