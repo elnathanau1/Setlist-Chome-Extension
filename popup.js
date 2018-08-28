@@ -32,11 +32,21 @@ createPlaylist.onclick = function(element) {
 							var venue = (responseJSON["venue"] ? responseJSON["venue"]["name"] : "undefined")
 							var date = (responseJSON["eventDate"] ? responseJSON["eventDate"] : "undefined")
 							//set processing
-							var set = responseJSON["sets"]["set"][0]["song"]
-							if(responseJSON["sets"]["set"].length > 1){
-								for(var i = 1; i < responseJSON["sets"]["set"].length; i++){
+							var set = []
+							if(responseJSON["sets"]["set"].length > 0){
+								for(var i = 0; i < responseJSON["sets"]["set"].length; i++){
 									responseJSON["sets"]["set"][i]["song"].forEach(function(element){
-										set.push(element)
+										//fixes for medleys
+										var songs = element["name"].split("/")
+										for(var x = 0; x < songs.length; x++){
+											//leading space after "/" sometimes so...
+											if(songs[x].search(" ") == 0){
+												set.push({["name"]:songs[x].slice(1, songs[x].length)})
+											}
+											else{
+												set.push({["name"]:songs[x]})
+											}
+										}
 									})
 								}
 							}

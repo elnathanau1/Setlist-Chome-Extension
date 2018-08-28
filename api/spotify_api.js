@@ -48,6 +48,9 @@ var spotify_api = {
       else {
         chrome.storage.sync.set({['Authorization_code']: 'undefined'}, function() {
           console.log('Storing Authorization_code value to be ' + 'undefined');
+          chrome.storage.sync.set({["Processing"]: "no"}, function(){
+            alert("Authentication Error!")
+          })
         });
       }
     });
@@ -65,19 +68,22 @@ var spotify_api = {
       xhttp.setRequestHeader('Authorization', `Basic ${btoa(`${config.SPOTIFY_CLIENT_ID}:${config.SPOTIFY_CLIENT_SECRET}`)}`)
       xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
       xhttp.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-          var responseJSON = JSON.parse(this.responseText);
-          chrome.storage.sync.set({'Access_token': responseJSON['access_token']}, function(){
-            console.log('Storing Access_token value to be ' + responseJSON['access_token']);
-            spotify_api.getUser()
-          });
-          // console.log('refresh_token: ' + responseJSON['refresh_token'])
-          //we probably dont actually need this since it takes an hour to expire
-
-        }else {
-          console.log(this.responseText)
-        }
-      };
+        if(this.readyState == 4){
+          if(this.status == 200){
+            var responseJSON = JSON.parse(this.responseText);
+            chrome.storage.sync.set({'Access_token': responseJSON['access_token']}, function(){
+              console.log('Storing Access_token value to be ' + responseJSON['access_token']);
+              spotify_api.getUser()
+            });
+          }
+          else{
+            chrome.storage.sync.set({["Processing"]: "no"}, function(){
+              // console.log("Processing = no")
+              alert("Could not request token!")
+            })
+          }
+        };
+      }
       xhttp.send('grant_type=authorization_code' + '&code=' + authToken + '&redirect_uri=' + chrome.identity.getRedirectURL() + 'callback');
     })
   },
@@ -199,8 +205,9 @@ var spotify_api = {
           xhttp.onreadystatechange = function(){
             if(this.readyState == 4){
               console.log(this.responseText)
-          		chrome.storage.sync.set({["Processing"]: "no"}, function(){
-                console.log("Processing = no")
+              chrome.storage.sync.set({["Processing"]: "no"}, function(){
+                // console.log("Processing = no")
+                alert("Playlist created!")
               })
             }
           };
