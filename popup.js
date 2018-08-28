@@ -44,11 +44,19 @@ createPlaylist.onclick = function(element) {
 											var songs = element["name"].split("/")
 											for(var x = 0; x < songs.length; x++){
 												//leading space after "/" sometimes so...
+												var songName = ""
 												if(songs[x].search(" ") == 0){
-													set.push({["name"]:songs[x].slice(1, songs[x].length)})
+													songName = songs[x].slice(1, songs[x].length)
 												}
 												else{
-													set.push({["name"]:songs[x]})
+													songName = songs[x]
+												}
+												//properly copies the cover info if it is a medley of covers (ex: mike shinoda)
+												if(element["cover"] != undefined){
+													set.push({["name"]:songName, ["cover"]:element["cover"]})
+												}
+												else{
+													set.push({["name"]:songName})
 												}
 											}
 										}
