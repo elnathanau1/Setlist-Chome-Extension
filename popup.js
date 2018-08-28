@@ -36,15 +36,20 @@ createPlaylist.onclick = function(element) {
 							if(responseJSON["sets"]["set"].length > 0){
 								for(var i = 0; i < responseJSON["sets"]["set"].length; i++){
 									responseJSON["sets"]["set"][i]["song"].forEach(function(element){
-										//fixes for medleys
-										var songs = element["name"].split("/")
-										for(var x = 0; x < songs.length; x++){
-											//leading space after "/" sometimes so...
-											if(songs[x].search(" ") == 0){
-												set.push({["name"]:songs[x].slice(1, songs[x].length)})
-											}
-											else{
-												set.push({["name"]:songs[x]})
+										if(element["name"].search("/") == -1){	//not a medley
+											set.push(element)
+										}
+										else{
+											//fixes for medleys
+											var songs = element["name"].split("/")
+											for(var x = 0; x < songs.length; x++){
+												//leading space after "/" sometimes so...
+												if(songs[x].search(" ") == 0){
+													set.push({["name"]:songs[x].slice(1, songs[x].length)})
+												}
+												else{
+													set.push({["name"]:songs[x]})
+												}
 											}
 										}
 									})
